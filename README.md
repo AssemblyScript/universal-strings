@@ -9,6 +9,7 @@ This document extends WebAssembly with a universal string type in order to:
 * Avoid ecosystem fragmentation as would be introduced by separate mechanisms to use on and off the Web
 * Avoid alloc+copy->garbage at the boundary in between two Wasm GC-enabled languages and/or JavaScript
 * Avoid code size hits by having to handle strings explicitly at the boundary or shipping basic string functions and their dependencies with each module
+* Avoid hurting developer experience, like having to author, publish, ship and/or install a variety of adapters for/in different use cases
 
 It is one step towards universal modules that run the same everywhere, without having to recompile for different environments or having to maintain multiple standard libraries or abstractions.
 

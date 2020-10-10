@@ -8,7 +8,7 @@ This document extends WebAssembly with a universal string type in order to:
 * Achieve similar ecosystem benefits in WebAssembly as have languages running on the JVM or CLR
 * Avoid ecosystem fragmentation as would be introduced by separate mechanisms to use on and off the Web
 * Avoid alloc+copy->garbage at the boundary in between two Wasm GC-enabled languages and/or JavaScript
-* Avoid code size hits by having to handle strings explicitly at the boundary or shipping basic string functions and its dependencies with each module
+* Avoid code size hits by having to handle strings explicitly at the boundary or shipping basic string functions and their dependencies with each module
 
 It is one step towards universal modules that run the same everywhere, without having to recompile for different environments or having to maintain multiple standard libraries or abstractions.
 
@@ -60,8 +60,9 @@ The WTF family of encodings has been chosen over the respective UTF family of en
 Universal WebAssembly Strings as of this document can be implemented as a managed object with one slot per encoding. When a string from encoding A is created, only the slot of encoding A is populated. Accessing slot B will trigger re-encoding from A to B to populate slot B before using it.
 
 * The common scenario is that each module uses exclusively encoding A or B, so populating the respective other slot typically happens at the boundary, but only has to be done once per string iff the other module is known to use a different encoding, or does not have to be re-encoded iff the other module is known to use the same encoding.
-* The uncommon scenario is that there is a module using multiple encodings, i.e. conditionally A or B, in which case the engine must emit a branch when a string is accessed to populate the unpopulated slot before using it, or may pre-populate the slot on the boundary by speculating.
-* Since the exact encoding required by a string instruction is known statically via its encoding immediate, the cost is either zero or a well-predicted branch triggering re-encoding once. Furthermore, an engine can omit superfluous checks if a preceeding string instruction in a code path already populates slot X.
+* The uncommon scenario is that there is a module using multiple encodings, i.e. conditionally A or B, in which case the engine must emit a branch when a string is accessed to populate the unpopulated slot before using it, or may pre-populate the slot at the boundary by speculating.
+* Since the exact encoding required by a string instruction is known statically via its encoding immediate, the cost is either zero or a well-predicted branch triggering re-encoding once.
+* Furthermore, an engine can omit superfluous checks and indirections if a preceeding string instruction in a code path already populates slot X, or if a `stringref`'s value is otherwise known to already have slot X populated.
 * If a language or host requires well-formed strings (i.e. UTF-8 or UTF-16), it may either
   * Perform a check at the boundary and potentially sanitize a string. In the common case, the string is well-formed and does not require sanitization.
   * Deal with not well-formed strings within its standard library otherwise, like many programming languages and engines already do, which may be specific to the language's WebAssembly target

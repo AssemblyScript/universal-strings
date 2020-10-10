@@ -46,16 +46,18 @@ Encodings supported in the MVP of this document are:
 
 Encoding | Immediate value | Encoding unit
 ---------|-----------------|---------------
-WTF-8    | 0x0             | u8 / 8 bits
-WTF-16   | 0x1             | u16 / 16 bits
+[WTF-8](https://simonsapin.github.io/wtf-8/) | 0x0 | u8 / 8 bits
+[WTF-16](https://simonsapin.github.io/wtf-8/#wtf-16) | 0x1 | u16 / 16 bits
+
+The WTF family of encodings has been chosen over the respective UTF family of encodings because it is more lenient, i.e. does not introduce trapping behavior but defers sanitization to modules and APIs requiring it. JavaScript and most of its related APIs are effectively designed for WTF-16, not UTF-16, for example.
 
 ## Implementation notes
 
-A universal WebAssembly string type can be implemented as a managed object with one slot per encoding. When a string from encoding A is created, only the slot of encoding A is populated. Accessing slot B will trigger re-encoding from A to B to populate slot B before using it.
+Universal WebAssembly Strings as of this document can be implemented as a managed object with one slot per encoding. When a string from encoding A is created, only the slot of encoding A is populated. Accessing slot B will trigger re-encoding from A to B to populate slot B before using it.
 
-* The common scenario is that each module uses exclusively encoding A or B, so populating the resspective other slot typically happens at the boundary, but only has to be done once per string iff the other module is known to use a different encoding, or does not have to be re-encoded iff the other module is known to use the same encoding.
+* The common scenario is that each module uses exclusively encoding A or B, so populating the respective other slot typically happens at the boundary, but only has to be done once per string iff the other module is known to use a different encoding, or does not have to be re-encoded iff the other module is known to use the same encoding.
 * The uncommon scenario is that there is a module using multiple encodings, i.e. conditionally A or B, in which case the engine must emit a branch when a string is accessed to populate the unpopulated slot before using it, or may pre-populate the slot on the boundary by speculating.
-* Since the exact encoding required by a string instruction is known statically via its encoding immediate, the cost is either zero or a well-predicted branch triggering re-encoding once.
-* If a language requires well-formed strings (i.e. UTF-8 or UTF-16), it may either
+* Since the exact encoding required by a string instruction is known statically via its encoding immediate, the cost is either zero or a well-predicted branch triggering re-encoding once. Furthermore, an engine can omit superfluous checks if a preceeding string instruction in a code path already populates slot X.
+* If a language or host requires well-formed strings (i.e. UTF-8 or UTF-16), it may either
   * Perform a check at the boundary and potentially sanitize a string. In the common case, the string is well-formed and does not require sanitization.
   * Deal with not well-formed strings within its standard library otherwise, like many programming languages and engines already do, which may be specific to the language's WebAssembly target

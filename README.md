@@ -40,6 +40,8 @@ Good interoperability with the Web Platform is critical for the long-term succes
 * `string.eq <enc>` compares two strings for equality given the specified encoding.
   * `string.eq $e : [stringref, stringref] -> [i32]`
 
+The list of instructions is not exhaustive and does not imply that instructions not yet mentioned aren't desirable.
+
 ## Encodings
 
 Encodings supported in the MVP of this document are:

@@ -16,7 +16,7 @@ It is one step towards universal modules that run the same everywhere, without h
 
 ## Motivation
 
-Good interoperability with the Web Platform is critical for the long-term success of WebAssembly, and good interoperability between different programming languages running on different hosts is desirable. The most common higher data types used in between two modules, or a host and a module, are strings and arrays, so making sure that these perform well and are compatible with the bulk of languages is important. This document describes a mechanism for strings, addressing concerns raised in discussions like [[1](https://github.com/WebAssembly/interface-types/issues/13)] and [[2](https://github.com/WebAssembly/gc/issues/145)].
+Good interoperability with the Web Platform is critical for the long-term success of WebAssembly, and good interoperability between different programming languages running on various hosts is desirable. The most common higher data types used in between two modules, or a host like a browser and a module, are strings and arrays, so making sure that these perform well and are compatible with the bulk of languages is important. This document describes a mechanism for strings, addressing concerns raised in discussions like [[1](https://github.com/WebAssembly/interface-types/issues/13)] and [[2](https://github.com/WebAssembly/gc/issues/145)].
 
 ## Types
 
@@ -55,7 +55,9 @@ Encoding | Immediate value | Encoding unit
 [WTF-8](https://simonsapin.github.io/wtf-8/) | 0x0 | u8 / 8 bits
 [WTF-16](https://simonsapin.github.io/wtf-8/#wtf-16) | 0x1 | u16 / 16 bits
 
-The WTF family of encodings has been chosen over the respective UTF family of encodings because it is more lenient, i.e. does not introduce trapping behavior but defers sanitization to modules and APIs requiring it. JavaScript and most of its related APIs are effectively designed for WTF-16, not UTF-16, for example.
+The WTF family of encodings has been chosen over the respective UTF family of encodings because it is more lenient, i.e. does not introduce trapping behavior but defers sanitization to modules and APIs requiring it. JavaScript and most of its related APIs are effectively designed for WTF-16, not UTF-16, for example. Or as the Unicode Standard, Version 13.0 states in section 2.7 Unicode Strings:
+
+> Depending on the programming environment, a Unicode string may or may not be required to be in the corresponding Unicode encoding form. For example, strings in Java, C#, or ECMAScript are Unicode 16-bit strings, but are not necessarily well-formed UTF16 sequences. In normal processing, it can be far more efficient to allow such strings to contain code unit sequences that are not well-formed UTF-16—that is, isolated surrogates. Because strings are such a fundamental component of every program, checking for isolated surrogates in every operation that modifies strings can create significant overhead, especially because supplementary characters are extremely rare as a percentage of overall text in programs worldwide.
 
 ## Implementation notes
 

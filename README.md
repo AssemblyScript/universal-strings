@@ -66,5 +66,5 @@ Universal WebAssembly Strings as of this document can be implemented as a manage
 * Since the exact encoding required by a string instruction is known statically via its encoding immediate, the cost is either zero or a well-predicted branch triggering re-encoding once.
 * Furthermore, an engine can omit superfluous checks and indirections if a preceeding string instruction in a code path already populates slot X, or if a `stringref`'s value is otherwise known to already have slot X populated.
 * If a language or host requires well-formed strings (i.e. UTF-8 or UTF-16), it may either
-  * Perform a check at the boundary and potentially sanitize a string. In the common case, the string is well-formed and does not require sanitization.
+  * Perform a check at the boundary and potentially sanitize a string. In the common case, the string is well-formed and does not require sanitization. (To avoid repeat work, a VM could store a flag indicating that the string has already been checked and is valid.)
   * Deal with not well-formed strings within its standard library otherwise, like many programming languages and engines already do, which may be specific to the language's WebAssembly target

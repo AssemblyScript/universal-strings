@@ -59,6 +59,20 @@ The WTF family of encodings has been chosen over the respective UTF family of en
 
 > Depending on the programming environment, a Unicode string may or may not be required to be in the corresponding Unicode encoding form. For example, strings in Java, C#, or ECMAScript are Unicode 16-bit strings, but are not necessarily well-formed UTF16 sequences. In normal processing, it can be far more efficient to allow such strings to contain code unit sequences that are not well-formed UTF-16—that is, isolated surrogates. Because strings are such a fundamental component of every program, checking for isolated surrogates in every operation that modifies strings can create significant overhead, especially because supplementary characters are extremely rare as a percentage of overall text in programs worldwide.
 
+### Integration with linear memory based languages
+
+The document does not impose the requirement of full GC support on a language using linear memory.
+
+The `string.new` and `string.lower` instructions are useful at the boundary even if a module does not fully embrace or otherwise support GC, enabling interoperability with or between for example systems languages like C/C++ and Rust by legalizing the relevant instructions when
+
+* Calling an imported function with a string argument using `string.new`
+* Consuming a string argument in an export using `string.lower`
+
+Furthermore, if there is a `string.new` creating a string from linear memory at one side of the boundary, and a `string.lower` immediately lowering the string at the other, as is the common case in systems languages, instead of creating an intermediate `stringref` the engine can optimize the operation to either
+
+* A single copy from the source to the target memory if encodings match
+* A re-encoding from the source to the target memory if encodings to not match
+
 ## Implementation notes
 
 Universal WebAssembly Strings as of this document can be implemented as a managed object with one slot per encoding. When a string from encoding A is created, only the slot of encoding A is populated. Accessing slot B will trigger re-encoding from A to B to populate slot B before using it.

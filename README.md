@@ -59,7 +59,7 @@ The WTF family of encodings has been chosen over the respective UTF family of en
 
 > Depending on the programming environment, a Unicode string may or may not be required to be in the corresponding Unicode encoding form. For example, strings in Java, C#, or ECMAScript are Unicode 16-bit strings, but are not necessarily well-formed UTF16 sequences. In normal processing, it can be far more efficient to allow such strings to contain code unit sequences that are not well-formed UTF-16—that is, isolated surrogates. Because strings are such a fundamental component of every program, checking for isolated surrogates in every operation that modifies strings can create significant overhead, especially because supplementary characters are extremely rare as a percentage of overall text in programs worldwide.
 
-### Integration with linear memory based languages
+## Integration with linear memory based languages
 
 The document does not impose the requirement of full GC support on a language using linear memory.
 

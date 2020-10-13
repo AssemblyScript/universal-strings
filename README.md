@@ -44,16 +44,19 @@ Good interoperability with the Web Platform is critical for the long-term succes
 * `string.eq <enc>` compares two strings for equality given the specified encoding.
   * `string.eq $e : [stringref, stringref] -> [i32]`
 
+* `string.is_well_formed <enc>` inquires whether a string is well-formed according to UTF-16.
+  * `string.is_well_formed $e : [stringref] -> [i32]`
+
 The list of instructions is not exhaustive and does not imply that instructions not yet mentioned aren't desirable.
 
 ## Encodings
 
 Encodings supported in the MVP of this document are:
 
-Encoding | Immediate value | Encoding unit
----------|-----------------|---------------
-[WTF-8](https://simonsapin.github.io/wtf-8/) | 0x0 | u8 / 8 bits
-[WTF-16](https://simonsapin.github.io/wtf-8/#wtf-16) | 0x1 | u16 / 16 bits
+Encoding | If well-formed | Immediate value | Encoding unit
+---------|----------------|-----------------|---------------
+[WTF-8](https://simonsapin.github.io/wtf-8/) | UTF-8 | 0x0 | 8 bits (u8)
+[WTF-16](https://simonsapin.github.io/wtf-8/#wtf-16) | UTF-16 | 0x1 | 16 bits (u16)
 
 The WTF family of encodings has been chosen over the respective UTF family of encodings because it is more lenient, i.e. does not introduce trapping behavior but defers sanitization to modules and APIs requiring it. JavaScript and most of its related APIs are effectively designed for WTF-16, not UTF-16, for example. Or as [The Unicode Standard, Version 13.0 – Core Specification](http://www.unicode.org/versions/Unicode13.0.0/ch02.pdf) states in section 2.7 Unicode Strings:
 
@@ -85,3 +88,4 @@ Universal WebAssembly Strings as of this document can be implemented as a manage
   * Perform a check at the boundary and potentially sanitize a string. In the common case, the string is well-formed and does not require sanitization.
   * Deal with not well-formed strings within its standard library otherwise, like many programming languages and engines already do, which may be specific to the language's WebAssembly target
 * In order to achieve ideal (speed and size) integration with linear memory based languages, an engine may split the code which makes a call with a string argument into a separate "adapter function" to avoid duplicating the entire function, and upon linking of two modules pick either the general or the optimized variant. Note that this particular mechanism is similar to what Interface Types proposes, but is implicit and as such improves developer experience and has zero code size cost.
+* To avoid redundant work, an engine may cache a flag indicating that a string has already been checked for well-formedness. Checking can be performed implicitly during operations permitting it, like when re-encoding.

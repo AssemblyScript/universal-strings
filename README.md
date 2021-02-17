@@ -1,15 +1,15 @@
-# Definitely not a Universal String Proposal for WebAssembly
+# Universal Strings for WebAssembly
 
 ## Introduction
 
-This document extends WebAssembly with a universal string type in order to:
+This document, which may or may not become a proposal to WebAssembly depending on whether consensus can be reached, extends WebAssembly with a universal string type in order to:
 
 * Achieve good / efficient interoperability between hosts, modules, JavaScript and Web APIs
-* Achieve similar ecosystem benefits in WebAssembly as have languages running on the JVM or CLR
-* Avoid ecosystem fragmentation as would be introduced by separate mechanisms to use on and off the Web
+* Achieve similar ecosystem benefits in WebAssembly as have languages running on the JVM or CLR, but for the entire WebAssembly ecosystem
+* Avoid ecosystem fragmentation as would be introduced by separate mechanisms or imports on and off the Web
 * Avoid alloc+copy->garbage at the boundary in between two Wasm GC-enabled languages and/or JavaScript (especially if a GC is not or cannot be highly tuned for this case)
 * Avoid code size hits by having to handle strings explicitly at the boundary or shipping basic string functions and their dependencies with each module
-* Avoid hurting developer experience, like having to author, publish, ship and/or install a variety of adapters for/in different use cases
+* Avoid hurting developer experience, like having to author, publish, ship and/or install explicit adapters
 * Avoid redundant re-encoding overhead when forwarding strings to multiple modules expecting different encodings (think npm)
 
 It is one step towards universal modules that run the same everywhere, without having to recompile for different environments or having to maintain multiple standard libraries or abstractions.
@@ -89,3 +89,7 @@ Universal WebAssembly Strings as of this document can be implemented as a manage
   * Deal with not well-formed strings within its standard library otherwise, like many programming languages and engines already do, which may be specific to the language's WebAssembly target
 * In order to achieve ideal (speed and size) integration with linear memory based languages, an engine may split the code which makes a call with a string argument into a separate "adapter function" to avoid duplicating the entire function, and upon linking of two modules pick either the general or the optimized variant. Note that this particular mechanism is similar to what Interface Types proposes, but is implicit and as such improves developer experience and has zero code size cost.
 * To avoid redundant work, an engine may cache a flag indicating that a string has already been checked for well-formedness. Checking can be performed implicitly during operations permitting it, like when re-encoding.
+
+## Implementation alternatives
+
+* Instead of maintaining multiple slots, a [Swift-like breadcrumb mechanism](https://swift.org/blog/utf8-string/#breadcrumbs) may abstract encoding differences away, using either only WTF-8 or WTF-16 for storage, potentially according to the host's native string encoding. This alternative has not been evaluated in detail yet. If feasible, it would need a way to represent lone surrogates similar to the WTF family of encodings.

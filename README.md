@@ -80,6 +80,8 @@ Furthermore, if there is a `string.new` creating a string from linear memory at 
 * A single copy from the source to the target memory if encodings match
 * A re-encoding from the source to the target memory if encodings to not match
 
+In addition, systems languages typically using linear memory may gracefully opt-in by providing a `wasm::string` backed by string instructions, may evaluate clever Reverse-Emscripten of for example `std::string` to `wasm::string` as a post-processing step, or, if neither is possible or desirable, rely on adapter fusion at the boundary to copy between memory and or GC objects for interoperability purposes.
+
 ## Implementation notes
 
 Universal WebAssembly Strings as of this document can be implemented as a managed object with one slot per encoding. When a string from encoding A is created, only the slot of encoding A is populated. Accessing slot B will trigger re-encoding from A to B to populate slot B before using it.

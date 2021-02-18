@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document, which may or may not become a proposal to WebAssembly depending on whether consensus can be reached, extends WebAssembly with a universal string type in order to:
+This document, provided for discussion, extends WebAssembly with a universal string type in order to:
 
 * Achieve good / efficient interoperability between hosts, modules, JavaScript and Web APIs
 * Achieve similar ecosystem benefits in WebAssembly as have languages running on the JVM or CLR, but for the entire WebAssembly ecosystem
@@ -16,7 +16,11 @@ It is one step towards universal modules that run the same everywhere, without h
 
 ## Motivation
 
-Good interoperability with the Web Platform is critical for the long-term success of WebAssembly, and good interoperability between different programming languages running on various hosts is desirable. The most common higher data types used in between two modules, or a host like a browser and a module, are strings and arrays, so making sure that these perform well and are compatible with the bulk of languages is important. This document describes a mechanism for strings, addressing concerns raised in discussions like [[1](https://github.com/WebAssembly/interface-types/issues/13)] and [[2](https://github.com/WebAssembly/gc/issues/145)].
+Excellent interoperability with the Web Platform is critical for the long-term success of WebAssembly, and efficient interoperability between different programming languages running on various hosts is desirable. The most common higher data types used in between two modules, or a host like a browser and a module, are strings and arrays, so making sure that these perform well and are compatible with the bulk of languages is important. This document describes a mechanism for strings, addressing concerns raised in discussions like [[1](https://github.com/WebAssembly/interface-types/issues/13)] and [[2](https://github.com/WebAssembly/gc/issues/145)].
+
+<p align="center">
+  <img src="./module-graph.svg" alt="Module graph" />
+</p>
 
 ## Types
 
@@ -47,7 +51,7 @@ Good interoperability with the Web Platform is critical for the long-term succes
 * `string.is_well_formed <enc>` inquires whether a string is well-formed according to UTF-16.
   * `string.is_well_formed $e : [stringref] -> [i32]`
 
-The list of instructions is not exhaustive and does not imply that instructions not yet mentioned aren't desirable.
+The list of instructions is not exhaustive and does not imply that instructions not yet mentioned aren't desirable. For example, instructions like `string.substring`, `string.concat` and others useful to perform common string operations may be desirable.
 
 ## Encodings
 

@@ -99,3 +99,9 @@ Universal WebAssembly Strings as of this document can be implemented as a manage
 ## Implementation alternatives
 
 * Instead of maintaining multiple slots, a [Swift-like breadcrumb mechanism](https://swift.org/blog/utf8-string/#breadcrumbs) may abstract encoding differences away, using either only WTF-8 or WTF-16 for storage, potentially according to the host's native string encoding. This alternative has not been evaluated in detail yet. If feasible, it would need a way to represent lone surrogates similar to the WTF family of encodings.
+
+---
+
+[![Public domain](https://licensebuttons.net/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)
+
+To the extent possible under law, [Daniel Wirtz](https://github.com/dcodeIO) has waived all copyright and related or neighboring rights to Universal Strings for WebAssembly.

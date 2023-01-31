@@ -1,3 +1,5 @@
+> ℹ️ Superseded by the [WebAssembly/stringref](https://github.com/WebAssembly/stringref) proposal.
+
 # Universal Strings for WebAssembly
 
 ## Introduction
